@@ -11,7 +11,7 @@
 
 ## Ambiente de desenvolvimento e Versionamento 
 
-Replit - IDE on-line.<br>
-GitHub - Plataforma de controle de versão, hospedagem, colaboração e gerenciamento
+- Replit - IDE on-line.<br>
+- GitHub - Plataforma de controle de versão, hospedagem, colaboração e gerenciamento
 
 
