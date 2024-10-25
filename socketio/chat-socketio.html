@@ -1,50 +1,147 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat</title>
+    <body>
+      <div class="chat-container">
+        <ul class="messages"></ul>
+        <div class="input-container">
+          <input type="text" id="message" placeholder="Digite sua mensagem" />
+          <button onclick="enviar()">Enviar</button>
+        </div>
+      </div>
+    </body>
+    <style>
+      /* Estilos da página de chat */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
 
-<script>
-  const socket = io();
+      .chat-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 300px;
+        max-width: 100%;
+        height: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
 
-  const userId = "user1"; // ID do usuário local
+      .messages {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        overflow-y: auto;
+        flex-grow: 1;
+      }
 
-  socket.on("connect", () => {
-    console.log("Conectado ao servidor");
-  });
+      .messages li {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 10px;
+        max-width: 70%;
+        word-wrap: break-word;
+      }
 
-  socket.on("message", (msg) => {
-    const ul = document.querySelector(".messages");
-    const li = document.createElement("li");
-    li.textContent = msg.text;
+      .sent {
+        background-color: #dcf8c6;
+        align-self: flex-end;
+      }
 
-    if (msg.sender === "bot") {
-      li.classList.add("received"); // Mensagens do bot aparecem do lado esquerdo
-    } else {
-      li.classList.add("sent"); // Mensagens do usuário aparecem do lado direito
-    }
+      .received {
+        background-color: #ffffff;
+        align-self: flex-start;
+        border: 1px solid #ccc;
+      }
 
-    ul.appendChild(li);
-  });
+      input {
+        width: calc(100% - 60px);
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+      }
 
-  function enviar() {
-    const msgInput = document.querySelector("input");
-    const message = msgInput.value.trim();
+      button {
+        padding: 10px;
+        background-color: green;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+      }
 
-    if (message === "") {
-      alert("Por favor, digite uma mensagem.");
-      return;
-    }
+      button:hover {
+        background-color: #0056b3;
+      }
 
-    const messageData = {
-      text: message,
-      sender: userId,
-    };
+      .input-container {
+        display: flex;
+        margin-top: 10px;
+      }
+    </style>
+    <!-- Inclua o cliente Socket.IO -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+      // Conecta ao servidor Socket.IO
+      const socket = io("https://temporal-scalloped-side.glitch.me");
 
-    // Envia a mensagem para o servidor via socket.io
-    socket.emit("message", messageData);
-    msgInput.value = ""; // Limpa o campo de input
-  }
+      const userId = "user1"; // ID do usuário local
 
-  document.querySelector("input").addEventListener("keypress", function (e) {
-    if (e.key === "Enter") {
-      enviar(); // Envia a mensagem quando a tecla Enter é pressionada
-    }
-  });
-</script>
+      // Recebe mensagens do servidor e exibe na interface
+      socket.on("message", (msg) => {
+        const ul = document.querySelector(".messages");
+        const li = document.createElement("li");
+        li.textContent = msg.text;
+
+        // Diferencia mensagens enviadas pelo usuário e recebidas do bot
+        if (msg.sender === "bot") {
+          li.classList.add("received"); // Mensagens do bot à esquerda
+        } else {
+          li.classList.add("sent"); // Mensagens do usuário à direita
+        }
+
+        ul.appendChild(li);
+      });
+
+      function enviar() {
+        const msgInput = document.querySelector("#message");
+        const message = msgInput.value.trim();
+
+        if (message === "") {
+          alert("Por favor, digite uma mensagem.");
+          return;
+        }
+
+        const messageData = {
+          text: message,
+          sender: userId,
+        };
+
+        // Envia a mensagem para o servidor via socket.io
+        socket.emit("message", messageData);
+        msgInput.value = ""; // Limpa o campo de input
+      }
+
+      // Detecta a tecla Enter para enviar a mensagem
+      document.querySelector("#message").addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          enviar();
+        }
+      });
+    </script>
+  </head>
+</html>
