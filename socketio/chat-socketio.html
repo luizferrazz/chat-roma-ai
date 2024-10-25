@@ -5,101 +5,128 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat</title>
-    <body>
-      <div class="chat-container">
-        <ul class="messages"></ul>
-        <div class="input-container">
-          <input type="text" id="message" placeholder="Digite sua mensagem" />
-          <button onclick="enviar()">Enviar</button>
-        </div>
-      </div>
-    </body>
-    <style>
-      /* Estilos da página de chat */
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f0f0f0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-      }
+      <style>
+        /* Estilos da página de chat */
+        body {
+          font-family: Arial, sans-serif;
+          background: linear-gradient(180deg, #8692de 10%, rgba(255, 219, 0, 0) 70%);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+        }
 
-      .chat-container {
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        width: 300px;
-        max-width: 100%;
-        height: 400px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      }
+        #userDisplay {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          text-align: center;
+          font-size: 20px;
+          margin-bottom: 20px;
+        }
 
-      .messages {
+        .back-screen{
+          border-radius:40px; 
+          padding-top: 30px !important;
+          padding:3px; 
+          /* background: linear-gradient(180deg, #8692de 10%, rgba(255, 219, 0, 0) 70%); */
+        }  
+        .chat-container {
+          background-color: white;
+          border-radius: 40px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          padding: 40px;
+          width: 500px;
+          max-width: 100%;
+          height: 600px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+  
+        .messages {
         list-style-type: none;
         padding: 0;
         margin: 0;
         overflow-y: auto;
         flex-grow: 1;
-      }
-
-      .messages li {
-        margin-bottom: 10px;
-        padding: 10px;
-        border-radius: 10px;
-        max-width: 70%;
-        word-wrap: break-word;
-      }
-
-      .sent {
-        background-color: #dcf8c6;
-        align-self: flex-end;
-      }
-
-      .received {
-        background-color: #ffffff;
-        align-self: flex-start;
-        border: 1px solid #ccc;
-      }
-
-      input {
-        width: calc(100% - 60px);
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        outline: none;
-      }
-
-      button {
-        padding: 10px;
-        background-color: green;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-left: 10px;
-      }
-
-      button:hover {
-        background-color: #0056b3;
-      }
-
-      .input-container {
         display: flex;
-        margin-top: 10px;
-      }
-    </style>
+        flex-direction: column; /* Garante que as mensagens fiquem empilhadas verticalmente */
+        }
+  
+        .messages li {
+          margin-bottom: 10px;
+          padding: 10px;
+          border-radius: 10px;
+          max-width: 70%;
+          word-wrap: break-word;
+          display: block;
+        }
+        
+        .sent {
+          background-color: #a8b0ff;
+          align-self: flex-end; /* Alinha as mensagens enviadas à direita */
+          border-radius: 10px 10px 0 10px;
+        }
+        
+        .received {
+          background-color: #ffffff;
+          align-self: flex-start; /* Alinha as mensagens recebidas à esquerda */
+          border: 1px solid #ccc;
+          border-radius: 10px 10px 10px 0;
+        }
+        
+        input {
+          width: calc(100% - 60px);
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          outline: none;
+        }
+  
+        button {
+          padding: 10px;
+          background-color: #a8b0ff;
+          color: black;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          margin-left: 10px;
+        }
+  
+        button:hover {
+          background-color: #8692de;
+          color: black
+        }
+  
+        .input-container {
+          display: flex;
+          margin-top: 10px;
+        }
+      </style>
+
+    <body>
+        <div class="back-screen">
+          <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+            <img src="images/m.png" style="width: 90px; ">
+            <p id="userDisplay"></p>
+          </div> 
+          <div class="chat-container">
+            <ul class="messages"></ul>
+            <div class="input-container">
+              <input type="text" id="message" placeholder="Digite sua mensagem" />
+              <button onclick="enviar()">Enviar</button>
+            </div>
+          </div>
+        </div>
+    </body>
+    
     <!-- Inclua o cliente Socket.IO -->
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
       // Conecta ao servidor Socket.IO
-      const socket = io("https://temporal-scalloped-side.glitch.me");
+      const socket = io.connect("https://horrible-owl-x7465q5rjqxfpx94-3000.app.github.dev/");
 
-      const userId = "user1"; // ID do usuário local
+      const userId = Math.random().toString(36).substr(2, 9); // ID do usuário local
 
       // Recebe mensagens do servidor e exibe na interface
       socket.on("message", (msg) => {
@@ -108,11 +135,12 @@
         li.textContent = msg.text;
 
         // Diferencia mensagens enviadas pelo usuário e recebidas do bot
-        if (msg.sender === "bot") {
-          li.classList.add("received"); // Mensagens do bot à esquerda
-        } else {
-          li.classList.add("sent"); // Mensagens do usuário à direita
-        }
+        if (msg.sender === userId) {
+        li.classList.add("sent"); // Mensagens do bot aparecem do lado esquerdo
+      } else {
+        li.classList.add("received"); // Mensagens do usuário aparecem do lado direito
+      }
+  
 
         ul.appendChild(li);
       });
@@ -142,6 +170,34 @@
           enviar();
         }
       });
+      
+      /* guardando o email no localStorage */
+      const email = document.getElementById("email").value;
+            if (email) {
+                localStorage.setItem("email", email);  // Salva o e-mail no localStorage
+                const nomeFormatado = extrairPrimeiroNome(email);
+                document.getElementById("userDisplay").textContent = nomeFormatado;
+            }
     </script>
+
+    <script>
+       document.addEventListener("DOMContentLoaded", () => {
+            const email = localStorage.getItem("email");
+            if (email) {
+                const nomeFormatado = extrairPrimeiroNome(email);
+                document.getElementById("userDisplay").textContent = "Bem vindo, " + nomeFormatado;
+            } else {
+                window.location.href = "login.html"; // Redireciona ao login se não houver e-mail salvo
+            }
+        });
+
+        function extrairPrimeiroNome(email) {
+            const parteLocal = email.split("@")[0];
+            const primeiroNome = parteLocal.split(".")[0];
+            return primeiroNome.charAt(0).toUpperCase() + primeiroNome.slice(1).toLowerCase();
+        }
+    </script>
+
+
   </head>
 </html>

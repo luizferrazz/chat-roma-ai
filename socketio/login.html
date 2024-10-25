@@ -18,9 +18,19 @@
                 <label for="senha">Senha</label>
                 <input type="password" id="senha" required>
             </div>
-            <button type="submit">Entrar</button>
-            <p class="signup-link">Não tem uma conta? <a href="#">Cadastrar-se</a></p>
+            <button onclick="entrar()">Entrar</button>
+            <p class="signup-link">Não tem uma conta? <a href="signUp.html">Cadastrar-se</a></p>
         </form>
     </div>
 </body>
+
+<script>
+    function entrar() {
+      const email = document.getElementById("email").value.trim();
+      if (email) {
+        localStorage.setItem("email", email); // Salva o nome no Local Storage
+        window.location.href = "chat-socketio.html"; // Redireciona para a página do chat
+      }}
+  </script>
+
 </html>

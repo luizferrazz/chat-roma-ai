@@ -8,6 +8,7 @@ const bodyParser = require('body-parser'); // Importar bodyParser para tratar JS
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
+const path = require('path');
 
 // Middleware para interpretar o body das requisições como JSON
 app.use(bodyParser.json());
@@ -78,9 +79,16 @@ app.post('/openai/chat', async (req, res) => {
   }
 });
 
-// Rota para servir o arquivo HTML
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/chat-socketio.html");
+app.use(express.static(path.join(__dirname,)));
+
+// Rota principal para carregar o login.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+// Rota para o chat (após login)
+app.get('/chat', (req, res) => {
+    res.sendFile(path.join(__dirname, 'chat-socketio.html'));
 });
 
 // Iniciar o servidor
