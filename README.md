@@ -1,7 +1,7 @@
 # Chat-roma-ai
 
 ### Objetivo
-#### Repositório do projeto de Sistemas Distribuídos - Faculdade Nova Roma: Desenvolvimento de um chatbot utilizando WebSocket e Socket.IO, com integração a APIs como o GPT-4. O objetivo é construir um sistema de comunicação em tempo real, capaz de processar linguagem natural e gerar respostas inteligentes.
+#### Repositório do projeto de Sistemas Distribuídos - Faculdade Nova Roma: Desenvolvimento de um chatbot utilizando WebSocket e Socket.IO, estamos desenvolvendo um sistema de comunicação em tempo real que integra diversas APIs, incluindo o GPT-4, para gerar imagens, textos e outras funcionalidades. O objetivo é criar uma plataforma capaz de processar linguagem natural e fornecer respostas inteligentes e relevantes.
 
 ## Integrantes
 - Daniel Holanda
