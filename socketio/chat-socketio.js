@@ -46,6 +46,33 @@ io.on("connection", (socket) => {
         console.error("Erro ao chamar a API da OpenAI:", error);
         io.emit("message", { text: "Erro ao gerar resposta", sender: "bot" });
       }
+    } else if (msg.text.startsWith("/image ")) {
+      const userMessage = msg.text.replace("/image ", ""); // Extrair mensagem do comando /image
+
+      // Chamar a API de geração de imagens
+      try {
+        const response = await axios.post(
+          'https://api.openai.com/v1/images/generations',
+          {
+            prompt: userMessage,
+            n: 1,
+            size: "1024x1024",
+          },
+          {
+            headers: {
+              'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, // Use a chave da API da OpenAI
+            },
+          }
+        );
+
+        const imageUrl = response.data.data[0].url; // Obter URL da imagem gerada
+
+        // Enviar a URL da imagem para todos os clientes conectados
+        io.emit("message", { text: imageUrl, type: "image", sender: "bot" });
+      } catch (error) {
+        console.error("Erro ao chamar a API da OpenAI para imagens:", error);
+        io.emit("message", { text: "Erro ao gerar imagem", sender: "bot" });
+      }
     } else {
       // Enviar a mensagem normalmente (sem o comando /text)
       io.emit("message", msg);

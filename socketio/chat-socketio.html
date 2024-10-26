@@ -28,7 +28,6 @@
           border-radius:40px; 
           padding-top: 30px !important;
           padding:3px; 
-          /* background: linear-gradient(180deg, #8692de 10%, rgba(255, 219, 0, 0) 70%); */
         }  
         .chat-container {
           background-color: white;
@@ -61,7 +60,14 @@
           word-wrap: break-word;
           display: block;
         }
-        
+
+        .messages img {
+          max-width: 100%; /* Define a largura máxima como 100% do contêiner */
+          max-height: 300px; /* Ajuste a altura máxima conforme necessário */
+          border-radius: 10px; /* Para adicionar um pouco de estilo às bordas da imagem */
+          margin-top: 10px; /* Espaço acima da imagem */
+        }
+              
         .sent {
           background-color: #a8b0ff;
           align-self: flex-end; /* Alinha as mensagens enviadas à direita */
@@ -124,7 +130,7 @@
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
       // Conecta ao servidor Socket.IO
-      const socket = io.connect("https://horrible-owl-x7465q5rjqxfpx94-3000.app.github.dev/");
+      const socket = io.connect("https://supernatural-spooky-wraith-6qp6979r99xfrqv5-3000.app.github.dev/");
 
       const userId = Math.random().toString(36).substr(2, 9); // ID do usuário local
 
@@ -132,15 +138,22 @@
       socket.on("message", (msg) => {
         const ul = document.querySelector(".messages");
         const li = document.createElement("li");
-        li.textContent = msg.text;
 
         // Diferencia mensagens enviadas pelo usuário e recebidas do bot
         if (msg.sender === userId) {
-        li.classList.add("sent"); // Mensagens do bot aparecem do lado esquerdo
+          li.classList.add("sent"); // Mensagens do bot aparecem do lado esquerdo
+        } else {
+          li.classList.add("received"); // Mensagens do usuário aparecem do lado direito
+        }
+
+        // Verifica se a mensagem é uma imagem
+        if (msg.type === "image") {
+        const img = document.createElement("img");
+        img.src = msg.text; // A URL da imagem
+        li.appendChild(img); // Adiciona a imagem ao elemento li
       } else {
-        li.classList.add("received"); // Mensagens do usuário aparecem do lado direito
+        li.textContent = msg.text; // Se não for uma imagem, apenas define o texto
       }
-  
 
         ul.appendChild(li);
       });
@@ -173,11 +186,11 @@
       
       /* guardando o email no localStorage */
       const email = document.getElementById("email").value;
-            if (email) {
-                localStorage.setItem("email", email);  // Salva o e-mail no localStorage
-                const nomeFormatado = extrairPrimeiroNome(email);
-                document.getElementById("userDisplay").textContent = nomeFormatado;
-            }
+      if (email) {
+        localStorage.setItem("email", email);  // Salva o e-mail no localStorage
+        const nomeFormatado = extrairPrimeiroNome(email);
+        document.getElementById("userDisplay").textContent = nomeFormatado;
+      }
     </script>
 
     <script>
@@ -197,7 +210,6 @@
             return primeiroNome.charAt(0).toUpperCase() + primeiroNome.slice(1).toLowerCase();
         }
     </script>
-
 
   </head>
 </html>
