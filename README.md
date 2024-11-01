@@ -5,6 +5,7 @@
 
 ## Integrantes
 - Daniel Holanda
+- Deyvid Santos
 - Luiz Ferraz
 - Nathalia Sales
 - Rodrigo Nascimento
